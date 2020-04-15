@@ -58,34 +58,20 @@ peak2_low = next(i for i, x in enumerate(channels) if x >= 1600)
 peak1_high = next(i for i, x in enumerate(channels) if x >= 800)
 peak2_high = next(i for i, x in enumerate(channels) if x >= 1800)
 
-# find the peaks in these 2 ranges
+# find the peaks (in terms of counts) in these 2 ranges
 peak1 = max(channels[peak1_low:peak1_high])
 peak2 = max(channels[peak2_low:peak2_high])
+peak1_energy = 511
+peak2_energy = 1275
 
+# let y = ax + b 
+a = (peak2_energy - peak1_energy) / (peak2 - peak1)
+b = peak1_energy - a * peak1
 
-# # check the energy ranges of Barium and find peak
-# b_energies = []
-# c_energies = 
-# for i in range(0,n):
-#     if energies[i] >= 265:
-#         while energies[i] <= 425:
-#             b_energies = energies[i]
-#             i += 1
-#         break
-
-# bar_peak = max(b_energies)
-
-# # check the energy ranges of Cobalt and find peaks
-# c_energies = []
-# for i in range(0,n):
-#     if energies[i] >= 265:
-#         while energies[i] <= 425:
-#             b_energies = energies[i]
-#             i += 1
-#         break
-
-# bar_peak = max(b_energies)
-     
+# convert counts to energies
+energies = []
+for i in range (0,n):
+    energies[i] = channels[i] * a + b
 
 plt.figure()
 plt.plot(data)
