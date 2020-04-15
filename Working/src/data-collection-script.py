@@ -25,7 +25,6 @@ group = 1 # Memory group
 
 dtb = DeviceFactory.createInstance(DeviceFactory.DeviceInterface.IDevice)
 
-
 # ---------------------------
 # Collecting the Data
 
@@ -51,10 +50,42 @@ so.HVoff()
 n = len(data)
 channels = np.arange(0,n) # create list corresponding to channels
 
-# convert channels into energies
-energies = []
-for i in range(0,n):
-    energies[i] = 0.87 * channels[i] + 23.45
+# CALIBRATION
+
+# find the peaks needed for calibration using Sodium
+peak1_low = next(i for i, x in enumerate(channels) if x >= 600)
+peak2_low = next(i for i, x in enumerate(channels) if x >= 1600)
+peak1_high = next(i for i, x in enumerate(channels) if x >= 800)
+peak2_high = next(i for i, x in enumerate(channels) if x >= 1800)
+
+# find the peaks in these 2 ranges
+peak1 = max(channels[peak1_low:peak1_high])
+peak2 = max(channels[peak2_low:peak2_high])
+
+
+# # check the energy ranges of Barium and find peak
+# b_energies = []
+# c_energies = 
+# for i in range(0,n):
+#     if energies[i] >= 265:
+#         while energies[i] <= 425:
+#             b_energies = energies[i]
+#             i += 1
+#         break
+
+# bar_peak = max(b_energies)
+
+# # check the energy ranges of Cobalt and find peaks
+# c_energies = []
+# for i in range(0,n):
+#     if energies[i] >= 265:
+#         while energies[i] <= 425:
+#             b_energies = energies[i]
+#             i += 1
+#         break
+
+# bar_peak = max(b_energies)
+     
 
 plt.figure()
 plt.plot(data)
