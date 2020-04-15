@@ -53,6 +53,7 @@ channels = np.arange(0,n) # create list corresponding to channels
 # CALIBRATION
 
 # find the peaks needed for calibration using Sodium
+# find indexes of upper and lower bounds on the region
 peak1_low = next(i for i, x in enumerate(channels) if x >= 600)
 peak2_low = next(i for i, x in enumerate(channels) if x >= 1600)
 peak1_high = next(i for i, x in enumerate(channels) if x >= 800)
@@ -73,11 +74,18 @@ energies = []
 for i in range (0,n):
     energies[i] = channels[i] * a + b
 
-plt.figure()
-plt.plot(data)
-plt.plot(spectrum2)
-plt.xlim(-50,2050)
-plt.ylim(-10,310)
-plt.grid(True)
-plt.savefig('spectrumDetector1background.pdf', format='pdf')
-plt.show()
+# check total counts in region of interest for Barium
+b_low = next(i for i, x in enumerate(energies) if x >= 265)
+b_high = next(i for i, x in enumerate(energies) if x >= 425)
+b_region_counts = np.sum(data[b_low:b_high])   # data has corresponding counts
+if (b_region_counts > 86.71):
+    print('exceeds counts for Barium!')
+
+# plt.figure()
+# plt.plot(data)
+# plt.plot(spectrum2)
+# plt.xlim(-50,2050)
+# plt.ylim(-10,310)
+# plt.grid(True)
+# plt.savefig('spectrumDetector1background.pdf', format='pdf')
+# plt.show()
