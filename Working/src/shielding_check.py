@@ -24,8 +24,6 @@ cs137 = cs137_raw - background # subtract the background
 # -----------------------------------------------------------------------------
     # Step 3: Check that there is not too much shielding using Cs-137 peak
 # -----------------------------------------------------------------------------
-signals = []
-ref_s2n_list = []
 distances = [50,100,125] # in cm
 # look for peaks, define these regions of interest manually
 # This is for Cs-137
@@ -83,46 +81,50 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
     s2n = signal / avg_background(min_kev,max_kev)
     return signal, s2n
 
+def check_shielding_run(distances, cs_min, cs_max):
+    signals = []
+    ref_s2n_list = []
+    # this builds the reference signal to noise ratios to compare with using Cs-137
+    for i in range(0, len(distances)):
+        temp1, temp2 = calculate_signal(cs137,cs_min, cs_max,distances[i])
+        signals.append(temp1)
+        ref_s2n_list.append(temp2)
 
-# this builds the reference signal to noise ratios to compare with using Cs-137
-for i in range(0, len(distances)):
-    temp1, temp2 = calculate_signal(cs137,cs_min, cs_max,distances[i])
-    signals.append(temp1)
-    ref_s2n_list.append(temp2)
+    # print(s2ns)
 
-# print(s2ns)
+    # measure at 50 cm:
+    data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    cps50 = get_cps(data50,cs_min,cs_max)
 
-# measure at 50 cm:
-data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-cps50 = get_cps(data50,cs_min,cs_max)
+    # measure at 100 cm:
+    data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    cps100 = get_cps(data100,cs_min,cs_max)
 
-# measure at 100 cm:
-data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-cps100 = get_cps(data100,cs_min,cs_max)
+    # measure at 125 cm:
+    data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    cps125 = get_cps(data125,cs_min,cs_max)
 
-# measure at 125 cm:
-data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-cps125 = get_cps(data125,cs_min,cs_max)
+    # Calculate all signal to noise ratios and put in a list
+    avg_bg = avg_background(cs_min,cs_max)
+    s2n_list = [cps50/avg_bg, cps100/avg_bg, cps125/avg_bg]
+    print(ref_s2n_list)
+    print(s2n_list)
 
-# Calculate all signal to noise ratios and put in a list
-avg_bg = avg_background(cs_min,cs_max)
-s2n_list = [cps50/avg_bg, cps100/avg_bg, cps125/avg_bg]
-print(ref_s2n_list)
-print(s2n_list)
+    excessive_shielding = False
+    for i in range(0,len(s2n_list)):
+        if (s2n_list[i] < ref_s2n_list[i]):
+            excessive_shielding = True
 
-excessive_shielding = False
-for i in range(0,len(s2n_list)):
-    if (s2n_list[i] < ref_s2n_list[i]):
-        excessive_shielding = True
+    return excessive_shielding
 
-if (excessive_shielding): print('shielding exceeds limit allowed.')
-else: print('shielding acceptable.')
+#     if (excessive_shielding): print('shielding exceeds limit allowed.')
+#     else: print('shielding acceptable.')
 
 # -----------------------------------------------------------------------------
     # Verify absence of fissile material
 # -----------------------------------------------------------------------------
 
-def verify():
+def verify(background):
     # this is for checking peaks and identifying isotopes
     ba133_raw = np.loadtxt('ba-133.csv',delimiter=',')
     ba133 = ba133_raw - background
@@ -134,7 +136,10 @@ def verify():
             print('no barium')
             match = False
             break
-    if (match): print ('barium found')
+    
+    return match
+    
+    # if (match): print ('barium found')
 
 # -----------------------------------------------------------------------------
     # Verify shielding does not exceed 4 cm
