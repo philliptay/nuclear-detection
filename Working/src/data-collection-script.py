@@ -70,7 +70,12 @@ a = (peak2_energy - peak1_energy) / (peak2 - peak1)
 b = peak1_energy - a * peak1
 
 # checks if the number of counts in the region of interest exceeds barium
-def check_counts_barium():
+def check_counts_barium(a, b, background):
+    ba_raw = np.loadtxt('ultradata-NOTHING-ba-run1.csv',delimiter=',')
+    data = ba_raw - background
+    n = len(data)
+    channels = np.arange(0,n) # create list corresponding to channels
+
     # convert counts to energies
     energies = []
     for i in range (0,n):
