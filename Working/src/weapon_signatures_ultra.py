@@ -13,11 +13,13 @@ def avg_background():
     background = []
     for i in range(0,len(b1)):
         background.append((b1[i]+b2[i]+b3[i])/3)
+    
+    return background
 
 # -----------------------------------------------------------------------------
     # Calibration with Na-22
 # -----------------------------------------------------------------------------
-def sodium_calibration():
+def sodium_calibration(background):
     na_raw1 = np.loadtxt('ultradata-NOTHING-na022-300s-run1.csv',delimiter=',')
     na_raw2 = np.loadtxt('ultradata-NOTHING-na022-300s-run2.csv',delimiter=',')
     na1 = na_raw1 - background
@@ -107,13 +109,16 @@ distances = [75,100,150] # in cm
     # Ba-133
 # -----------------------------------------------------------------------------
 
-def barium_weapon_sig():
+def co_ba_data_find(background):
     co_ba_1 = np.loadtxt('ultradata-co060-ba133-300s-run1.csv',delimiter=',') - background
     co_ba_2 = np.loadtxt('ultradata-co060-ba133-300s-run2.csv',delimiter=',') - background
     co_ba_data = []
     for i in range(0,len(co_ba_1)):
         co_ba_data.append((co_ba_1[i]+co_ba_2[i])/2) # average the 2 datasets
+    
+    return co_ba_data
 
+def barium_weapon_sig(background, co_ba_data):
     # regions of interest
     ba_1a = 265
     ba_1b = 348
@@ -151,7 +156,7 @@ def barium_weapon_sig():
     # Co-60
 # -----------------------------------------------------------------------------
 
-def cobalt_weapon_sig():
+def cobalt_weapon_sig(background, co_ba_data):
     # regions of interest
     co_1a = 1125
     co_1b = 1273
