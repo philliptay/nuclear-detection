@@ -69,17 +69,22 @@ peak2_energy = 1275
 a = (peak2_energy - peak1_energy) / (peak2 - peak1)
 b = peak1_energy - a * peak1
 
-# convert counts to energies
-energies = []
-for i in range (0,n):
-    energies[i] = channels[i] * a + b
+# checks if the number of counts in the region of interest exceeds barium
+def check_counts_barium():
+    # convert counts to energies
+    energies = []
+    for i in range (0,n):
+        energies[i] = channels[i] * a + b
 
-# check total counts in region of interest for Barium
-b_low = next(i for i, x in enumerate(energies) if x >= 265)
-b_high = next(i for i, x in enumerate(energies) if x >= 425)
-b_region_counts = np.sum(data[b_low:b_high])   # data has corresponding counts
-if (b_region_counts > 86.71):
-    print('exceeds counts for Barium!')
+    # check total counts in region of interest for Barium
+    b_low = next(i for i, x in enumerate(energies) if x >= 265)
+    b_high = next(i for i, x in enumerate(energies) if x >= 425)
+    b_region_counts = np.sum(data[b_low:b_high])   # data has corresponding counts
+    if (b_region_counts > 86.71):
+        print('exceeds counts for Barium!')
+        return true
+    
+    else return false
 
 # plt.figure()
 # plt.plot(data)
