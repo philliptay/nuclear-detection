@@ -1,19 +1,83 @@
 from weapon_signatures_ultra import *
 from data-collection-script import check_counts_barium
 from shielding_check import *
+from simple-osprey-2020 import *
 import sys
+import numpy as np
 
-# 1. collect data: background (x3), barium, cobalt, sodium
+# setup (copied from simple-osprey-2020.py)
+imode = 1 # Standard input mode of OSPREY
+group = 1 # Memory group
+dtb = DeviceFactory.createInstance(DeviceFactory.DeviceInterface.IDevice)
+
+# connect to osprey 
+connect2osprey("128.112.35.172")
+HVon(870)
+
+# to collect data each time
+def collect_data():
+    data = np.zeros(2048)
+    
+    for i in range(12):
+        data += simplespectrum(60)
+        
+    return data
+
+# 1. collect data: background (x3)
+print('Please point the sensor towards the background. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running background collection 1')
+data1 = collect_data()
+
+print('Background collection 1 complete. Please change location of background detector. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running background collection 2')
+data2 = collect_data()
+
+print('Background collection 2 complete. Please change location of background detector. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running background collection 3')
+data3 = collect_data()
+print('Background collection 3 complete.')
 
 # 2. average the backgrounds
-background = avg_background()
+background = avg_background(data1, data2, data3)
 
-# 3. check for shielding. terminate if not below the limit
+# 3. collect data: material at 50cm, 100cm, 125cm
+print('Now, please point the sensor to the material and place it 50cm away from the material. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection at 50cm')
+data50 = collect_data() - background
+
+print('Data collection at 50cm complete. Please move the sensor to 100cm. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection at 100cm')
+data100 = collect_data() - background
+
+print('Data Collection at 100cm is complete. Please move the sensor to 125cm. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection at 100cm')
+data125 = collect_data() - background
+print('Data collection at 100cm is complete')
+
+# 4. check for shielding. terminate if not below the limit
 distances = [50,100,125] # in cm
 cs_min = 634
 cs_max = 738
 
-excessive_shielding = check_shielding_run(distances, cs_min, cs_max)
+excessive_shielding = check_shielding_run(distances, cs_min, cs_max, data50, data100, data125)
 if (excessive_shielding):
     print('the shielding level is within the accepted range.')
     print('would you like to continue? (Y/N)')
@@ -26,15 +90,47 @@ else:
     print('program is shutting down')
     sys.exit()
 
-# 4. calibrate with sodium
-(a,b) = sodium_calibrate(background) # in weapon_signatures_ultra
+# 5. collect data: sodium
+print('Now, please point the sensor to sodium and place it ___cm away. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection for sodium calibration 1')
+na_raw1 = collect_data()
 
-# 5. get weapon signatures for Ba-133 and Co-60
-co_ba_data = co_ba_data_find(background)
+print ('Sodium data 1 collected. Please ready the sensor for reading 2. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection for sodium calibration 1')
+na_raw2 = collect_data()
+print ('Sodium data 2 is collected')
+
+# 6. calibrate with sodium
+(a,b) = sodium_calibration(background, na_raw1, na_raw2) # in weapon_signatures_ultra
+
+# 7. data collection: cobalt/barium ----- ??
+print('Please point the sensor at the material for reading 1. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection 1')
+co_ba_1 = collect_data()
+
+print('Reading 1 complete. Please ready the sensor for reading 2. When ready, input Y and press enter')
+ans = input()
+while ans != 'Y':
+    ans = input()
+print('Running data collection 1')
+co_ba_2 = collect_data()
+print ('Reading 2 is complete')
+
+# 8. get weapon signatures for Ba-133 and Co-60 ---- ???
+co_ba_data = co_ba_data_find(background, co_ba_1, co_ba_2)
 (ba1_s2n, ba2_s2n) = barium_weapon_sig(background, co_ba_data)
 (co1_s2n, co2_s2n) = cobalt_weapon_sig(background, co_ba_data)
 
-# 6. verify the absence of fissile material
+# 8. verify the absence of fissile material
 match = verify(background)
 if match:
     print('barium found!')
@@ -42,4 +138,6 @@ else:
     print('barium not found!')
 
 # ?? do we need this?
-exceeds_boolean = check_counts_barium(a,b,background)
+# exceeds_boolean = check_counts_barium(a,b,background)
+
+HVoff()
