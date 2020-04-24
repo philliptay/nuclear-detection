@@ -6,10 +6,10 @@ collection_time = 300
 # -----------------------------------------------------------------------------
     # Collect and average the background
 # -----------------------------------------------------------------------------
-def avg_background():
-    b1 = np.loadtxt('ultradata-background-300s-run1.csv',delimiter=',')
-    b2 = np.loadtxt('ultradata-background-300s-run2.csv',delimiter=',')
-    b3 = np.loadtxt('ultradata-background-300s-run3.csv',delimiter=',')
+def avg_background(b1, b2, b3):
+#     b1 = np.loadtxt('ultradata-background-300s-run1.csv',delimiter=',')
+#     b2 = np.loadtxt('ultradata-background-300s-run2.csv',delimiter=',')
+#     b3 = np.loadtxt('ultradata-background-300s-run3.csv',delimiter=',')
     background = []
     for i in range(0,len(b1)):
         background.append((b1[i]+b2[i]+b3[i])/3)
@@ -19,9 +19,9 @@ def avg_background():
 # -----------------------------------------------------------------------------
     # Calibration with Na-22
 # -----------------------------------------------------------------------------
-def sodium_calibration(background):
-    na_raw1 = np.loadtxt('ultradata-NOTHING-na022-300s-run1.csv',delimiter=',')
-    na_raw2 = np.loadtxt('ultradata-NOTHING-na022-300s-run2.csv',delimiter=',')
+def sodium_calibration(background, na_raw1, na_raw2):
+    # na_raw1 = np.loadtxt('ultradata-NOTHING-na022-300s-run1.csv',delimiter=',')
+    # na_raw2 = np.loadtxt('ultradata-NOTHING-na022-300s-run2.csv',delimiter=',')
     na1 = na_raw1 - background
     na2 = na_raw2 - background
     na = []
@@ -109,9 +109,9 @@ distances = [75,100,150] # in cm
     # Ba-133
 # -----------------------------------------------------------------------------
 
-def co_ba_data_find(background):
-    co_ba_1 = np.loadtxt('ultradata-co060-ba133-300s-run1.csv',delimiter=',') - background
-    co_ba_2 = np.loadtxt('ultradata-co060-ba133-300s-run2.csv',delimiter=',') - background
+def co_ba_data_find(background, co_ba_1, co_ba_2):
+    # co_ba_1 = np.loadtxt('ultradata-co060-ba133-300s-run1.csv',delimiter=',') - background
+    # co_ba_2 = np.loadtxt('ultradata-co060-ba133-300s-run2.csv',delimiter=',') - background
     co_ba_data = []
     for i in range(0,len(co_ba_1)):
         co_ba_data.append((co_ba_1[i]+co_ba_2[i])/2) # average the 2 datasets
