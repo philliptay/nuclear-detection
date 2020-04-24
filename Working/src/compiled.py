@@ -115,14 +115,14 @@ ans = input()
 while ans != 'Y':
     ans = input()
 print('Running data collection 1')
-co_ba_1 = collect_data()
+co_ba_1 = collect_data() - background
 
 print('Reading 1 complete. Please ready the sensor for reading 2. When ready, input Y and press enter')
 ans = input()
 while ans != 'Y':
     ans = input()
 print('Running data collection 1')
-co_ba_2 = collect_data()
+co_ba_2 = collect_data() - background
 print ('Reading 2 is complete')
 
 # 8. get weapon signatures for Ba-133 and Co-60 ---- ???
