@@ -81,7 +81,7 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
     s2n = signal / avg_background(min_kev,max_kev)
     return signal, s2n
 
-def check_shielding_run(distances, cs_min, cs_max):
+def check_shielding_run(distances, cs_min, cs_max, data50, data100, data125):
     signals = []
     ref_s2n_list = []
     # this builds the reference signal to noise ratios to compare with using Cs-137
@@ -93,15 +93,15 @@ def check_shielding_run(distances, cs_min, cs_max):
     # print(s2ns)
 
     # measure at 50 cm:
-    data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    # data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
     cps50 = get_cps(data50,cs_min,cs_max)
 
     # measure at 100 cm:
-    data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    # data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
     cps100 = get_cps(data100,cs_min,cs_max)
 
     # measure at 125 cm:
-    data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    # data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
     cps125 = get_cps(data125,cs_min,cs_max)
 
     # Calculate all signal to noise ratios and put in a list
