@@ -24,20 +24,20 @@ cs137 = cs137_raw - background # subtract the background
 # -----------------------------------------------------------------------------
     # Step 3: Check that there is not too much shielding using Cs-137 peak
 # -----------------------------------------------------------------------------
-distances = [50,100,125] # in cm
+distances = [50,75,100] # in cm
 # look for peaks, define these regions of interest manually
 # This is for Cs-137
 cs_min = 634
 cs_max = 738
 
 # Collects and calculates the counts per second in a given interval
-def get_cps(spectrum, min_kev, max_kev):
+def get_cps(spectrum, min_kev, max_kev, a):
     total_count = 0
     n = 2048
     channels = np.arange(1,n+1)
     energies = np.zeros(n)
     for i in range(0,n):
-        energies[i] = 0.7591*channels[i]
+        energies[i] = a*channels[i]
 
     for i in range(0,n):
         if (energies[i] >= min_kev and energies[i] <= max_kev):
@@ -47,12 +47,12 @@ def get_cps(spectrum, min_kev, max_kev):
     return peak_cps
 
 # Calculates the average background counts per second for a given interval
-def avg_background(min_kev, max_kev):
+def avg_background(min_kev, max_kev, a):
     n = 2048
     channels = np.arange(1,n+1)
     energies = np.zeros(n)
     for i in range(0,n):
-        energies[i] = 0.7591*channels[i]
+        energies[i] = a*channels[i]
     temp = []
     for i in range(0,n):
         if (energies[i] >= min_kev and energies[i] <= max_kev):
@@ -81,7 +81,7 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
     s2n = signal / avg_background(min_kev,max_kev)
     return signal, s2n
 
-def check_shielding_run(distances, cs_min, cs_max, data50, data100, data125):
+def check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a):
     signals = []
     ref_s2n_list = []
     # this builds the reference signal to noise ratios to compare with using Cs-137
@@ -94,18 +94,18 @@ def check_shielding_run(distances, cs_min, cs_max, data50, data100, data125):
 
     # measure at 50 cm:
     # data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps50 = get_cps(data50,cs_min,cs_max)
+    cps50 = get_cps(data50,cs_min,cs_max, a)
+
+    # measure at 75 cm:
+    # data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
+    cps100 = get_cps(data75,cs_min,cs_max, a)
 
     # measure at 100 cm:
-    # data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps100 = get_cps(data100,cs_min,cs_max)
-
-    # measure at 125 cm:
     # data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps125 = get_cps(data125,cs_min,cs_max)
+    cps125 = get_cps(data100,cs_min,cs_max, a)
 
     # Calculate all signal to noise ratios and put in a list
-    avg_bg = avg_background(cs_min,cs_max)
+    avg_bg = avg_background(cs_min,cs_max, a)
     s2n_list = [cps50/avg_bg, cps100/avg_bg, cps125/avg_bg]
     print(ref_s2n_list)
     print(s2n_list)
