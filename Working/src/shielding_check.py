@@ -124,20 +124,43 @@ def check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a):
     # Verify absence of fissile material
 # -----------------------------------------------------------------------------
 
-def verify(background):
-    # this is for checking peaks and identifying isotopes
-    ba133_raw = np.loadtxt('ba-133.csv',delimiter=',')
-    ba133 = ba133_raw - background
-    weapon_s2n = [11.525233793790212, 2.881308448447553, 1.844037407006434] # for ba-133
-    signals1, s2n1 = calculate_signals(265,348,ba133)
-    match = True
-    for i in range(0, len(weapon_s2n)):
-        if (s2n1[i] < weapon_s2n[i]):
-            print('no barium')
-            match = False
-            break
+def verify(material_data):
+    # smooth data (PHILIP HELP)
     
-    return match
+    # we know that barium peak should be be at approx 696 counts
+    barium_exists = false
+    barium_peak_channel = 696
+    max_in_barium_range = max(material_data[500,1000])
+    if (max_in_barium_range > (barium_peak - 10)) and (max_in_barium_range < (barium_peak + 10)):
+        barium_exists = true
+    
+    # we know that cobalt peaks would be at approx 1209 and 1362
+    cobalt_exists = false
+    cobalt_peak1_channel = 1209
+    cobalt_peak2_channel = 1362
+    max_in_cobalt_range1 = max(material_data[1000,1280])
+    max_in_cobalt_range2 = max(material_data[1280,1500])
+    if (max_in_cobalt_range1 > (cobalt_peak1_channel - 10) and (max_in_cobalt_range1 > (cobalt_peak1_channel + 10)):
+        if (max_in_cobalt_range2 > (cobalt_peak2_channel - 10) and (max_in_cobalt_range2 > (cobalt_peak2_channel + 10)):
+            cobalt_exists = true
+    
+    # return the presence of barium and cobalt
+    return (barium_exists, cobalt_exists)
+
+# def verify(background):
+#     # this is for checking peaks and identifying isotopes
+#     ba133_raw = np.loadtxt('ba-133.csv',delimiter=',')
+#     ba133 = ba133_raw - background
+#     weapon_s2n = [11.525233793790212, 2.881308448447553, 1.844037407006434] # for ba-133
+#     signals1, s2n1 = calculate_signals(265,348,ba133)
+#     match = True
+#     for i in range(0, len(weapon_s2n)):
+#         if (s2n1[i] < weapon_s2n[i]):
+#             print('no barium')
+#             match = False
+#             break
+    
+#     return match
     
     # if (match): print ('barium found')
 
