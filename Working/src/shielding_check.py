@@ -15,7 +15,7 @@ collection_time = 300
 background = np.loadtxt('megadata-910V-300s-background.csv',delimiter=',')
 
 # -----------------------------------------------------------------------------
-    # Step 2: Calibrate with Cs137 (Malika's script), maybe collect 3 times at 3 distances?
+    # Step 2: Calibrate with Cs137
 # -----------------------------------------------------------------------------
     # collect raw spectrum
 cs137_raw = np.loadtxt('megadata-910V-300s-cesium-137.csv',delimiter=',')
@@ -60,7 +60,7 @@ def avg_background(min_kev, max_kev, a):
     return np.average(temp) / collection_time
 
 # Takes in a spectrum and outputs the expected signal and S/N ratio
-# with 4 cm of shielding in a warhead configuration.
+# with 2 cm of shielding in a warhead configuration.
 def calculate_signal(spectrum, min_kev, max_kev, distance):
     cps = get_cps(spectrum, min_kev, max_kev)
 
@@ -70,7 +70,7 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
     # print(activity1)
 
     # constants
-    shielding = 4 # cm
+    shielding = 2 # cm
     density_pb = 11.342 # g/cm^3
     mu_pb = .07
 
@@ -150,38 +150,9 @@ def verify(material_data):
     # return the presence of barium and cobalt
     return (barium_exists, cobalt_exists)
 
-# def verify(background):
-#     # this is for checking peaks and identifying isotopes
-#     ba133_raw = np.loadtxt('ba-133.csv',delimiter=',')
-#     ba133 = ba133_raw - background
-#     weapon_s2n = [11.525233793790212, 2.881308448447553, 1.844037407006434] # for ba-133
-#     signals1, s2n1 = calculate_signals(265,348,ba133)
-#     match = True
-#     for i in range(0, len(weapon_s2n)):
-#         if (s2n1[i] < weapon_s2n[i]):
-#             print('no barium')
-#             match = False
-#             break
-    
-#     return match
-    
-    # if (match): print ('barium found')
-
 # -----------------------------------------------------------------------------
-    # Verify shielding does not exceed 4 cm
+    # Verify shielding does not exceed 2 cm (1 cm thick shell surrounding core)
 # -----------------------------------------------------------------------------
 
 # cs_137_signals, cs_137_s2n = calculate_signals(634,738,cs137) # calculate the expected based on collected data (cs137)
 # print (s2n0)
-'''
-proceed = True
-for i in range(0,len(cs_137_s2n)):
-    if (s2n0[i] < cs_137_s2n[i]):
-        print ('shielding exceeds limit allowed')
-        proceed = False
-        break
-
-if (proceed):
-    print ('proceeding with verification')
-    verify()       # proceed with verification
-'''
