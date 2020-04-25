@@ -128,20 +128,23 @@ def verify(material_data):
     # smooth data (PHILIP HELP)
     
     # we know that barium peak should be be at approx 696 counts
-    barium_exists = false
+    barium_exists = False
     barium_peak_channel = 696
-    max_in_barium_range = max(material_data[500,1000])
-    if (max_in_barium_range > (barium_peak - 10)) and (max_in_barium_range < (barium_peak + 10)):
+    max_in_barium_range = np.where(material_data[500:1000] == np.amax(material_data[500:1000]))[0] + 500
+    # print (max_in_barium_range)
+    if (max_in_barium_range > (barium_peak_channel - 10)) and (max_in_barium_range < (barium_peak_channel + 10)):
         barium_exists = true
-    
+
     # we know that cobalt peaks would be at approx 1209 and 1362
-    cobalt_exists = false
+    cobalt_exists = False
     cobalt_peak1_channel = 1209
     cobalt_peak2_channel = 1362
-    max_in_cobalt_range1 = max(material_data[1000,1280])
-    max_in_cobalt_range2 = max(material_data[1280,1500])
-    if (max_in_cobalt_range1 > (cobalt_peak1_channel - 10) and (max_in_cobalt_range1 > (cobalt_peak1_channel + 10)):
-        if (max_in_cobalt_range2 > (cobalt_peak2_channel - 10) and (max_in_cobalt_range2 > (cobalt_peak2_channel + 10)):
+    max_in_cobalt_range1 = np.where(material_data[1000:1280] == np.amax(material_data[1000:1280]))[0] + 1000
+    max_in_cobalt_range2 = np.where(material_data[1280:1500] == np.amax(material_data[1280:1500]))[0] + 1280
+    # print(max_in_cobalt_range1)
+    # print(max_in_cobalt_range2)
+    if (max_in_cobalt_range1 > (cobalt_peak1_channel - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_channel + 10)):
+        if (max_in_cobalt_range2 > (cobalt_peak2_channel - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_channel + 10)):
             cobalt_exists = true
     
     # return the presence of barium and cobalt
