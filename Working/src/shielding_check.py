@@ -120,55 +120,6 @@ def check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a):
 #     if (excessive_shielding): print('shielding exceeds limit allowed.')
 #     else: print('shielding acceptable.')
 
-# ----------------------------------------------------------------------
-# Smooth dataset
-# ----------------------------------------------------------------------
-
-def smooth(data):
-    smooth = 7 # Use (2 x smooth + 1 points) for averaging
-
-    smoothdata = []
-
-    smoothdata.extend(data[:smooth]) # First elements (unsmoothed)
-
-    for i in range(smooth,len(data)-smooth):
-
-        smoothdata.append(np.mean(data[i-smooth:i+smooth]))
-
-    smoothdata.extend(data[-smooth:]) # Last elements (unsmoothed)
-
-    return smoothdata
-
-# -----------------------------------------------------------------------------
-    # Verify absence of fissile material
-# -----------------------------------------------------------------------------
-
-def verify(material_data):
-    # smooth data
-    smoothed_data = smooth(material_data)
-
-    # we know that barium peak should be be at approx 696 counts
-    barium_exists = False
-    barium_peak_channel = 696
-    max_in_barium_range = np.where(smoothed_data[500:1000] == np.amax(smoothed_data[500:1000]))[0] + 500
-    # print (max_in_barium_range)
-    if (max_in_barium_range > (barium_peak_channel - 10)) and (max_in_barium_range < (barium_peak_channel + 10)):
-        barium_exists = True
-
-    # we know that cobalt peaks would be at approx 1209 and 1362
-    cobalt_exists = False
-    cobalt_peak1_channel = 1209
-    cobalt_peak2_channel = 1362
-    max_in_cobalt_range1 = np.where(smoothed_data[1000:1280] == np.amax(smoothed_data[1000:1280]))[0] + 1000
-    max_in_cobalt_range2 = np.where(smoothed_data[1280:1500] == np.amax(smoothed_data[1280:1500]))[0] + 1280
-    # print(max_in_cobalt_range1)
-    # print(max_in_cobalt_range2)
-    if (max_in_cobalt_range1 > (cobalt_peak1_channel - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_channel + 10)):
-        if (max_in_cobalt_range2 > (cobalt_peak2_channel - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_channel + 10)):
-            cobalt_exists = True
-
-    # return the presence of barium and cobalt
-    return (barium_exists, cobalt_exists)
 
 # -----------------------------------------------------------------------------
     # Verify shielding does not exceed 2 cm (1 cm thick shell surrounding core)

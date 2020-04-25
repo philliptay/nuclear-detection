@@ -22,8 +22,8 @@ def avg_background(b1, b2, b3):
 def sodium_calibration(background, na_raw1, na_raw2):
     # na_raw1 = np.loadtxt('ultradata-NOTHING-na022-300s-run1.csv',delimiter=',')
     # na_raw2 = np.loadtxt('ultradata-NOTHING-na022-300s-run2.csv',delimiter=',')
-    na1 = na_raw1 - background
-    na2 = na_raw2 - background
+    na1 = smooth(na_raw1 - background)
+    na2 = smooth(na_raw2 - background)
     na = []
     for i in range(0,len(b1)):
         na.append((na1[i]+na2[i])/2)
@@ -104,6 +104,56 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
     return signal, s2n
 
 distances = [75,100,150] # in cm
+
+# ----------------------------------------------------------------------
+# Smooth dataset
+# ----------------------------------------------------------------------
+
+def smooth(data):
+    smooth = 7 # Use (2 x smooth + 1 points) for averaging
+
+    smoothdata = []
+
+    smoothdata.extend(data[:smooth]) # First elements (unsmoothed)
+
+    for i in range(smooth,len(data)-smooth):
+
+        smoothdata.append(np.mean(data[i-smooth:i+smooth]))
+
+    smoothdata.extend(data[-smooth:]) # Last elements (unsmoothed)
+
+    return smoothdata
+
+# -----------------------------------------------------------------------------
+    # Verify absence of fissile material
+# -----------------------------------------------------------------------------
+
+def verify(material_data):
+    # smooth data
+    smoothed_data = smooth(material_data)
+
+    # we know that barium peak should be be at approx 696 counts
+    barium_exists = False
+    barium_peak_channel = 696
+    max_in_barium_range = np.where(smoothed_data[500:1000] == np.amax(smoothed_data[500:1000]))[0] + 500
+    # print (max_in_barium_range)
+    if (max_in_barium_range > (barium_peak_channel - 10)) and (max_in_barium_range < (barium_peak_channel + 10)):
+        barium_exists = True
+
+    # we know that cobalt peaks would be at approx 1209 and 1362
+    cobalt_exists = False
+    cobalt_peak1_channel = 1209
+    cobalt_peak2_channel = 1362
+    max_in_cobalt_range1 = np.where(smoothed_data[1000:1280] == np.amax(smoothed_data[1000:1280]))[0] + 1000
+    max_in_cobalt_range2 = np.where(smoothed_data[1280:1500] == np.amax(smoothed_data[1280:1500]))[0] + 1280
+    # print(max_in_cobalt_range1)
+    # print(max_in_cobalt_range2)
+    if (max_in_cobalt_range1 > (cobalt_peak1_channel - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_channel + 10)):
+        if (max_in_cobalt_range2 > (cobalt_peak2_channel - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_channel + 10)):
+            cobalt_exists = True
+
+    # return the presence of barium and cobalt
+    return (barium_exists, cobalt_exists)
 
 # -----------------------------------------------------------------------------
     # Ba-133
