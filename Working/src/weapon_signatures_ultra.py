@@ -13,7 +13,7 @@ def avg_background(b1, b2, b3):
     background = []
     for i in range(0,len(b1)):
         background.append((b1[i]+b2[i]+b3[i])/3)
-    
+
     return background
 
 # -----------------------------------------------------------------------------
@@ -46,7 +46,7 @@ def sodium_calibration(background, na_raw1, na_raw2):
     # y = ax + b
     a = (na_peak2-na_peak1)/(na_peak2_ch-na_peak1_ch)
     b = na_peak1 - a*na_peak1_ch
-    
+
     return (a,b)
 
 
@@ -115,7 +115,7 @@ def co_ba_data_find(background, co_ba_1, co_ba_2):
     co_ba_data = []
     for i in range(0,len(co_ba_1)):
         co_ba_data.append((co_ba_1[i]+co_ba_2[i])/2) # average the 2 datasets
-    
+
     return co_ba_data
 
 def barium_weapon_sig(background, co_ba_data):
@@ -142,7 +142,7 @@ def barium_weapon_sig(background, co_ba_data):
     print("Barium-133:")
     print(ba1_s2n)
     print(ba2_s2n)
-    
+
     return (ba1_s2n, ba2_s2n)
 
 # cps
@@ -179,5 +179,5 @@ def cobalt_weapon_sig(background, co_ba_data):
     print("Cobalt-60:")
     print(co1_s2n)
     print(co2_s2n)
-    
+
     return (co1_s2n, co2_s2n)
