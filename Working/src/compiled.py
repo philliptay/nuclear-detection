@@ -134,9 +134,9 @@ material_data3 = collect_data() - background
 print ('Reading 3 is complete')
 
 # 8. verify the absence of fissile material
-(bmatch1, cmatch1) = verify(material_data1)
-(bmatch2, cmatch2) = verify(material_data2)
-(bmatch3, cmatch3) = verify(material_data3)
+(bmatch1, cmatch1) = verify(material_data1, a)
+(bmatch2, cmatch2) = verify(material_data2, a)
+(bmatch3, cmatch3) = verify(material_data3, a)
 
 if (bmatch1 and bmatch2) or (bmatch1 and bmatch3) or (bmatch2 and bmatch3):
     print('barium detected in a majority of the tests')
