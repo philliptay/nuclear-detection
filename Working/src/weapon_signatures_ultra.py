@@ -136,10 +136,13 @@ def verify(material_data, a):
     barium_exists = False
     barium_peak1_energy = 324.075
     barium_peak2_energy = 380.7
-    max_in_barium_range1 = (np.where(smoothed_data == np.amax(smoothed_data[(275/a):(348/a)]))[0]) * a # energy at which it is max1
-    max_in_barium_range2 = (np.where(smoothed_data == np.amax(smoothed_data[(348/a):(418/a)]))[0]) * a # energy at which it is max2
-    # print (max_in_barium_range1)
-    # print (max_in_barium_range1)
+    b1_low = int(275/a)
+    b1_high = int(348/a)
+    b2_high = int(418/a)
+    max_in_barium_range1 = (np.where(smoothed_data[b1_low:b1_high] == np.amax(smoothed_data[b1_low:b1_high]))[0] + b1_low) * a
+    max_in_barium_range2 = (np.where(smoothed_data[b1_high:b2_high] == np.amax(smoothed_data[b1_high:b2_high]))[0] + b1_high) * a
+#     print (max_in_barium_range1)
+#     print (max_in_barium_range2)
     if (max_in_barium_range1 > (barium_peak1_energy - 10)) and (max_in_barium_range1 < (barium_peak1_energy + 10)):
         if (max_in_barium_range2 > (barium_peak2_energy - 10)) and (max_in_barium_range2 < (barium_peak2_energy + 10)):
             barium_exists = True
@@ -148,10 +151,13 @@ def verify(material_data, a):
     cobalt_exists = False
     cobalt_peak1_energy = 1211
     cobalt_peak2_energy = 1365.33
-    max_in_cobalt_range1 = (np.where(smoothed_data == np.amax(smoothed_data[(1125/a):(1273/a)]))[0]) * a
-    max_in_cobalt_range2 = (np.where(smoothed_data == np.amax(smoothed_data[(1273/a):(1415/a)]))[0]) * a
-    # print(max_in_cobalt_range1)
-    # print(max_in_cobalt_range2)
+    c1_low = int(1125/a)
+    c1_high = int(1273/a)
+    c2_high = int(1415/a)
+    max_in_cobalt_range1 = (np.where(smoothed_data[c1_low:c1_high] == np.amax(smoothed_data[c1_low:c1_high]))[0] + c1_low) * a
+    max_in_cobalt_range2 = (np.where(smoothed_data[c1_high:c2_high] == np.amax(smoothed_data[c1_high:c2_high]))[0] + c1_high) * a
+#     print(max_in_cobalt_range1)
+#     print(max_in_cobalt_range2)
     if (max_in_cobalt_range1 > (cobalt_peak1_energy - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_energy + 10)):
         if (max_in_cobalt_range2 > (cobalt_peak2_energy - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_energy + 10)):
             cobalt_exists = True
