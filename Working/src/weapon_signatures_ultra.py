@@ -143,8 +143,8 @@ def verify(material_data, a):
     max_in_barium_range2 = (np.where(smoothed_data[b1_high:b2_high] == np.amax(smoothed_data[b1_high:b2_high]))[0] + b1_high) * a
 #     print (max_in_barium_range1)
 #     print (max_in_barium_range2)
-    if (max_in_barium_range1 > (barium_peak1_energy - 10)) and (max_in_barium_range1 < (barium_peak1_energy + 10)):
-        if (max_in_barium_range2 > (barium_peak2_energy - 10)) and (max_in_barium_range2 < (barium_peak2_energy + 10)):
+    if (max_in_barium_range1 > (barium_peak1_energy - 15)) and (max_in_barium_range1 < (barium_peak1_energy + 15)):
+        if (max_in_barium_range2 > (barium_peak2_energy - 15)) and (max_in_barium_range2 < (barium_peak2_energy + 15)):
             barium_exists = True
 
     # we know that cobalt peaks would be at approx 1209 and 1362
@@ -158,8 +158,8 @@ def verify(material_data, a):
     max_in_cobalt_range2 = (np.where(smoothed_data[c1_high:c2_high] == np.amax(smoothed_data[c1_high:c2_high]))[0] + c1_high) * a
 #     print(max_in_cobalt_range1)
 #     print(max_in_cobalt_range2)
-    if (max_in_cobalt_range1 > (cobalt_peak1_energy - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_energy + 10)):
-        if (max_in_cobalt_range2 > (cobalt_peak2_energy - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_energy + 10)):
+    if (max_in_cobalt_range1 > (cobalt_peak1_energy - 15)) and (max_in_cobalt_range1 > (cobalt_peak1_energy + 15)):
+        if (max_in_cobalt_range2 > (cobalt_peak2_energy - 15)) and (max_in_cobalt_range2 > (cobalt_peak2_energy + 15)):
             cobalt_exists = True
 
     # return the presence of barium and cobalt
