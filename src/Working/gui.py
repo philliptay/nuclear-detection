@@ -1,10 +1,12 @@
 #!usr/bin/env python
 
-from sys import stderr
-from socket import socket, AF_INET, SOCK_STREAM
 from pickle import load, dump
 from tkinter import Tk, Button, Label, Entry, Scrollbar, Listbox, Frame, StringVar
 from tkinter import N, S, E, W, HORIZONTAL, END, ACTIVE, messagebox
+from weapon_signatures_ultra import *
+from data_collection_script import check_counts_barium
+from shielding_check import *
+from simple_osprey_2020 import *
 
 class Gui(object):
 
@@ -37,9 +39,9 @@ class Gui(object):
 
         shieldbutton = Button(buttonsFrame, text='Shielding Check')
         shieldbutton.bind('<Button-1>', self.shieldListener)
-        calibratebutton = Button(buttonsFrame, text='Calibrate')
+        calibratebutton = Button(buttonsFrame, text='Calibrate', state=tk.DISABLED)
         calibratebutton.bind('<Button-1>', self.calibrateListener)
-        verifybutton = Button(buttonsFrame, text='Verify')
+        verifybutton = Button(buttonsFrame, text='Verify', state=tk.DISABLED)
         verifybutton.bind('<Button-1>', self.verifyListener)
 
 
@@ -68,7 +70,9 @@ class Gui(object):
         self._scrollingListbox.insert(END, ' Welcome to the nuclear source verification interface. To begin, press shielding check.')
 
     def shieldListener(self, event):
-        shielding_check()
+        connect2osprey("128.112.35.172")
+        HVon(910)
+
 
     def calibrateListener(self, event):
         calibrate()
@@ -76,8 +80,12 @@ class Gui(object):
     def verifyListener(self, event):
         verify()
 
+    def on_quit(self, event):
+        quit()
+
     # start the gui
     def start(self):
+        self._root.protocol("WM_DELETE_WINDOW", self.on_quit)
         self._root.mainloop()
 
 if __name__ == '__main__':

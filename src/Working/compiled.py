@@ -1,7 +1,7 @@
 from weapon_signatures_ultra import *
-from data-collection-script import check_counts_barium
+from data_collection_script import check_counts_barium
 from shielding_check import *
-from simple-osprey-2020 import *
+from simple_osprey_2020 import *
 import sys
 import numpy as np
 
@@ -10,17 +10,17 @@ imode = 1 # Standard input mode of OSPREY
 group = 1 # Memory group
 dtb = DeviceFactory.createInstance(DeviceFactory.DeviceInterface.IDevice)
 
-# connect to osprey 
+# connect to osprey
 connect2osprey("128.112.35.172")
 HVon(910)
 
 # to collect data each time
 def collect_data():
     data = np.zeros(2048)
-    
+
     for i in range(12):
         data += simplespectrum(60)
-        
+
     return data
 
 # 1. collect data: background (x3)
@@ -149,7 +149,7 @@ else:
     print('cobalt not detected in a majority of the tests')
 
 HVoff()
-    
+
 # # 7. data collection: cobalt/barium ----- ??
 # print('Please point the sensor at the material for reading 1. When ready, input Y and press enter')
 # ans = input()

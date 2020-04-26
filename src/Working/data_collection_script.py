@@ -1,10 +1,10 @@
 # To collect data, convert bin numbers to energy, pick up cps in regions
 # defined on the spreadsheet
 
-import simple-osprey-2020 as so
+import simple_osprey_2020 as so
 import Utilities
 
-import matplotlib.pyplot at plt
+import matplotlib.pyplot as plt
 import time
 import csv
 import numpy as np
@@ -65,7 +65,7 @@ peak2 = max(channels[peak2_low:peak2_high])
 peak1_energy = 511
 peak2_energy = 1275
 
-# let y = ax + b 
+# let y = ax + b
 a = (peak2_energy - peak1_energy) / (peak2 - peak1)
 b = peak1_energy - a * peak1
 
@@ -88,8 +88,9 @@ def check_counts_barium(a, b, background):
     if (b_region_counts > 86.71):
         print('exceeds counts for Barium!')
         return true
-    
-    else return false
+
+    else:
+         return false
 
 # plt.figure()
 # plt.plot(data)

@@ -30,7 +30,7 @@ DSALX_MCA_TYPE = 5
 def setupHVPS(dev):
     import time
     from ParameterCodes import ParameterCodes
-    
+
     input = 1
     devType = determineDeviceType(dev)
     if OSPREY_MCA_TYPE != devType:
@@ -41,7 +41,7 @@ def setupHVPS(dev):
 
             #Turn on HV
             dev.setParameter(ParameterCodes.Input_VoltageStatus, True, input)
-            
+
             #Wait till ramping is complete
             while(dev.getParameter(ParameterCodes.Input_VoltageRamping, input) is True):
                 print ("HVPS is ramping...")
@@ -51,7 +51,7 @@ def setupHVPS(dev):
         #Turn on HV
         Stabilized_Probe_Bussy = 0x00080000
         Stabilized_Probe_OK = 0x00100000
-        
+
         if (1 == getInt("Stabilized Probe Connected? (0=NO or 1=Yes):", 0, 1)):          #work on the Stabilized Probe
             dev_probe_type = dev.getParameter(ParameterCodes.Input_Status, input)
             if((dev_probe_type & Stabilized_Probe_OK) != Stabilized_Probe_OK):
@@ -75,34 +75,34 @@ def setupHVPS(dev):
                 else:
                     print ("Stabilized Probe detected, HV Ignored!")
         # End of HV Section*****************************************************************
-    
-def setup():    
+
+def setup():
     """
     Description:
         This method will setup the Python package path to
         include the Lynx communications package defined
-        by the \PythonExamples\DataTypes directory that came 
+        by the \PythonExamples\DataTypes directory that came
         with the SDK CD.
     Arguments:
         none
     Return:
         none
     """
-    toolkitPath = os.getcwd().replace(os.path.sep+"Working", os.path.sep+"DataTypes") 
+    toolkitPath = os.getcwd().replace(os.path.sep+"Working", os.path.sep+"DataTypes")
     sys.path.append(toolkitPath)
-    
+
 def readLine(txt):
     """
     Description:
         This method will print the text that is supplied
         to the Python console and wait for the user to
-        enter a response.  The purpose is to hide the 
+        enter a response.  The purpose is to hide the
         differences in the implementation of raw_input
         between different OS's.  Yes, there are subtle
         difference.
     Arguments:
         txt  (in, string) The text to display
-    Return: 
+    Return:
         (string)    The entered value
     """
 
@@ -112,7 +112,7 @@ def readLine(txt):
 def getMcaAddress():
     """
     Description:
-        This method will request the IP address from the 
+        This method will request the IP address from the
         user via the Python console.
     Arguments:
         none
@@ -135,7 +135,7 @@ def getSpectralMode():
         that has been entered by the Python console
     Arguments:
         none
-    Return: 
+    Return:
         (int) The value
     """
     error=True
@@ -147,7 +147,7 @@ def getSpectralMode():
                 return val      #Pha
             elif(1 == val):
                 return 3        #Dlfc
-        except: 
+        except:
             pass
 def getListMode():
     """
@@ -156,7 +156,7 @@ def getListMode():
         that has been entered by the Python console
     Arguments:
         none
-    Return: 
+    Return:
         (int) The value
     """
     error=True
@@ -168,7 +168,7 @@ def getListMode():
                 return 4 #List
             elif(1 == val):
                 return 5 #Tlist
-        except: 
+        except:
             pass
 def getPresetMode():
     """
@@ -177,7 +177,7 @@ def getPresetMode():
         that has been entered by the Python console
     Arguments:
         none
-    Return: 
+    Return:
         (int) The value
     """
     error=True
@@ -191,7 +191,7 @@ def getPresetMode():
                 return 2 #PresetModes.PresetRealTime
             elif(2 == val):
                 return 1 #PresetModes.PresetLiveTime
-        except: 
+        except:
             pass
 def getMCSPresetMode():
     """
@@ -200,7 +200,7 @@ def getMCSPresetMode():
         that has been entered by the Python console
     Arguments:
         none
-    Return: 
+    Return:
         (int) The value
     """
     error=True
@@ -211,9 +211,9 @@ def getMCSPresetMode():
             if (0 == val):
                 return 0 #PresetModes.PresetNone
             elif(1 == val):
-                return 4 #PresetModes.PresetSweeps            
-        except: 
-            pass        
+                return 4 #PresetModes.PresetSweeps
+        except:
+            pass
 def getFloat(text, min, max):
     """
     Description:
@@ -223,7 +223,7 @@ def getFloat(text, min, max):
         text    (in, string) The text description
         min     (in, float) The min value
         max     (in, float) The max value
-    Return: 
+    Return:
         (float) The value
     """
     val=0.0
@@ -245,7 +245,7 @@ def getInt(text, min, max):
         text    (in, string) The text description
         min     (in, int) The min value
         max     (in, int) The max value
-    Return: 
+    Return:
         (int) The value
     """
     val=0
@@ -265,7 +265,7 @@ def dumpException(ex):
         information
     Arguments:
         ex    (in, Exception) The exception
-    Return: 
+    Return:
         none
     """
     print("Exception caught.  Details: %s"%str(ex))
@@ -287,31 +287,31 @@ def reconstructAndOutputTlistData(td, timeBase, clear):
     """
     global RolloverTime
     if (clear): RolloverTime = long(0)
-    
+
     recTime=0
     recEvent=0
-    Time=long(0)  
+    Time=long(0)
     conv = float(timeBase)
     conv /= 1000 #Convert to ms
-    
-    for event in td.getEvents():          
+
+    for event in td.getEvents():
         recTime=event.getTime()
         recEvent=event.getEvent()
-        
-        if (0 == (recTime&ROLLOVERBIT)): 
+
+        if (0 == (recTime&ROLLOVERBIT)):
             Time = RolloverTime | (recTime & 0x7FFF)
         else:
             LSBofTC = int(0)
             MSBofTC = int(0)
             LSBofTC |= (recTime & 0x7FFF) << 15
             MSBofTC |= recEvent << 30
-            RolloverTime = MSBofTC | LSBofTC 
-            
+            RolloverTime = MSBofTC | LSBofTC
+
             #goto next event
             continue
         print("Event: " + str(event.getEvent()) + "; Time (uS): " + str(Time*conv))
         Time=0
-        
+
 def isLocalAddressAccessible():
     """
     Description:
@@ -319,7 +319,7 @@ def isLocalAddressAccessible():
         of the local network adapter can be obtained.
     Arguments:
         none
-    Return: 
+    Return:
         (bool)    True indicates that the network address can be obtained
     """
     try:
@@ -351,17 +351,17 @@ def disableAcquisition(dtb, input):
     Arguments:
         dtb (in, IDevice).  The device interface.
         input (in, int).  The input number
-    Return: 
+    Return:
         none
     """
-    
+
     exec ("from ParameterCodes import *")
     exec ("from CommandCodes import *")
     exec ("from ParameterTypes import *")
-    
+
     #Make sure the input is locked before attempting any operations
     dtb.lock("administrator", "password", input)
-    
+
     #Stop acquisition
     try:
         dtb.control(CommandCodes.Stop, input)
@@ -382,4 +382,4 @@ def disableAcquisition(dtb, input):
     try:
         dtb.setParameter(ParameterCodes.Counter_Status, 0, input)
     except:
-        pass   
+        pass

@@ -180,29 +180,29 @@ def countspectrum(target): # Specify number of desired counts
 # Detector 1 is "128.112.35.172"
 # Detector 2 is "128.112.35.212"
 
-connect2osprey("128.112.35.172")
+#connect2osprey("128.112.35.172")
+#
+# HVon(870)
+# data = np.zeros(2048)
+#
+# for i in range(12):
+#     data += simplespectrum(60)
+#
+# np.savetxt('dataDetector1background.csv',data,delimiter=',')
+#
+# spectrum2 = countspectrum(50000) # Total counts in spectrum
 
-HVon(870)
-data = np.zeros(2048)
-
-for i in range(12):
-    data += simplespectrum(60)
-
-np.savetxt('dataDetector1background.csv',data,delimiter=',')
-
-spectrum2 = countspectrum(50000) # Total counts in spectrum
-
-HVoff()
+#HVoff()
 
 
-plt.figure()
-plt.plot(data)
-plt.plot(spectrum2)
-plt.xlim(-50,2050)
-plt.ylim(-10,310)
-plt.grid(True)
-plt.savefig('spectrumDetector1background.pdf', format='pdf')
-plt.show()
+# plt.figure()
+# plt.plot(data)
+# plt.plot(spectrum2)
+# plt.xlim(-50,2050)
+# plt.ylim(-10,310)
+# plt.grid(True)
+# plt.savefig('spectrumDetector1background.pdf', format='pdf')
+# plt.show()
 
 # ----------------------------------------------------------------------
 # THE END
