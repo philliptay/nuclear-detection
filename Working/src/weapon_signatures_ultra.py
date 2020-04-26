@@ -128,28 +128,32 @@ def smooth(data):
     # Verify absence of fissile material
 # -----------------------------------------------------------------------------
 
-def verify(material_data):
+def verify(material_data, a):
     # smooth data
     smoothed_data = smooth(material_data)
 
     # we know that barium peak should be be at approx 696 counts
     barium_exists = False
-    barium_peak_channel = 696
-    max_in_barium_range = np.where(smoothed_data[500:1000] == np.amax(smoothed_data[500:1000]))[0] + 500
-    # print (max_in_barium_range)
-    if (max_in_barium_range > (barium_peak_channel - 10)) and (max_in_barium_range < (barium_peak_channel + 10)):
-        barium_exists = True
+    barium_peak1_energy = 324.075
+    barium_peak2_energy = 380.7
+    max_in_barium_range1 = (np.where(smoothed_data == np.amax(smoothed_data[(275/a):(348/a)]))[0]) * a # energy at which it is max1
+    max_in_barium_range2 = (np.where(smoothed_data == np.amax(smoothed_data[(348/a):(418/a)]))[0]) * a # energy at which it is max2
+    # print (max_in_barium_range1)
+    # print (max_in_barium_range1)
+    if (max_in_barium_range1 > (barium_peak1_energy - 10)) and (max_in_barium_range1 < (barium_peak1_energy + 10)):
+        if (max_in_barium_range2 > (barium_peak2_energy - 10)) and (max_in_barium_range2 < (barium_peak2_energy + 10)):
+            barium_exists = True
 
     # we know that cobalt peaks would be at approx 1209 and 1362
     cobalt_exists = False
-    cobalt_peak1_channel = 1209
-    cobalt_peak2_channel = 1362
-    max_in_cobalt_range1 = np.where(smoothed_data[1000:1280] == np.amax(smoothed_data[1000:1280]))[0] + 1000
-    max_in_cobalt_range2 = np.where(smoothed_data[1280:1500] == np.amax(smoothed_data[1280:1500]))[0] + 1280
+    cobalt_peak1_energy = 1211
+    cobalt_peak2_energy = 1365.33
+    max_in_cobalt_range1 = (np.where(smoothed_data == np.amax(smoothed_data[(1125/a):(1273/a)]))[0]) * a
+    max_in_cobalt_range2 = (np.where(smoothed_data == np.amax(smoothed_data[(1273/a):(1415/a)]))[0]) * a
     # print(max_in_cobalt_range1)
     # print(max_in_cobalt_range2)
-    if (max_in_cobalt_range1 > (cobalt_peak1_channel - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_channel + 10)):
-        if (max_in_cobalt_range2 > (cobalt_peak2_channel - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_channel + 10)):
+    if (max_in_cobalt_range1 > (cobalt_peak1_energy - 10)) and (max_in_cobalt_range1 > (cobalt_peak1_energy + 10)):
+        if (max_in_cobalt_range2 > (cobalt_peak2_energy - 10)) and (max_in_cobalt_range2 > (cobalt_peak2_energy + 10)):
             cobalt_exists = True
 
     # return the presence of barium and cobalt
