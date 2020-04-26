@@ -4,7 +4,6 @@ from pickle import load, dump
 from tkinter import Tk, Button, Label, Entry, Scrollbar, Listbox, Frame, StringVar
 from tkinter import N, S, E, W, HORIZONTAL, END, ACTIVE, messagebox
 from weapon_signatures_ultra import *
-from data_collection_script import check_counts_barium
 from shielding_check import *
 from simple_osprey_2020 import *
 
@@ -15,7 +14,7 @@ class Gui(object):
 
         # create gui
         self._root = Tk()
-        self._root.title('Nuclear source verification interface')
+        self._root.title('Nuclear Source Verification Interface')
         screenWidth = self._root.winfo_screenwidth()
         screenHeight = self._root.winfo_screenheight()
         self._root.geometry('%sx%s'% (screenWidth//2, screenHeight//2))

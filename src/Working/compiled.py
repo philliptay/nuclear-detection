@@ -1,5 +1,4 @@
 from weapon_signatures_ultra import *
-from data_collection_script import check_counts_barium
 from shielding_check import *
 from simple_osprey_2020 import *
 import sys
