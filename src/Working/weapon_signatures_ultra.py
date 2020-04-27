@@ -141,8 +141,8 @@ def verify(material_data, a):
     b2_high = int(418/a)
     max_in_barium_range1 = (np.where(smoothed_data[b1_low:b1_high] == np.amax(smoothed_data[b1_low:b1_high]))[0] + b1_low) * a
     max_in_barium_range2 = (np.where(smoothed_data[b1_high:b2_high] == np.amax(smoothed_data[b1_high:b2_high]))[0] + b1_high) * a
-    print (max_in_barium_range1)
-    print (max_in_barium_range2)
+#     print (max_in_barium_range1)
+#     print (max_in_barium_range2)
     for i in max_in_barium_range1:
         if (i > (barium_peak1_energy - 15)) and (i < (barium_peak1_energy + 15)):
             for j in max_in_barium_range2:
@@ -158,8 +158,8 @@ def verify(material_data, a):
     c2_high = int(1415/a)
     max_in_cobalt_range1 = (np.where(smoothed_data[c1_low:c1_high] == np.amax(smoothed_data[c1_low:c1_high]))[0] + c1_low) * a
     max_in_cobalt_range2 = (np.where(smoothed_data[c1_high:c2_high] == np.amax(smoothed_data[c1_high:c2_high]))[0] + c1_high) * a
-    print(max_in_cobalt_range1)
-    print(max_in_cobalt_range2)
+#     print(max_in_cobalt_range1)
+#     print(max_in_cobalt_range2)
     for i in max_in_cobalt_range1:
         if (i > (cobalt_peak1_energy - 15)) and (i > (cobalt_peak1_energy + 15)):
             for j in max_in_cobalt_range2:
