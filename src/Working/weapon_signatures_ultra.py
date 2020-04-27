@@ -161,9 +161,9 @@ def verify(material_data, a):
 #     print(max_in_cobalt_range1)
 #     print(max_in_cobalt_range2)
     for i in max_in_cobalt_range1:
-        if (i > (cobalt_peak1_energy - 15)) and (i > (cobalt_peak1_energy + 15)):
+        if (i > (cobalt_peak1_energy - 15)) and (i < (cobalt_peak1_energy + 15)):
             for j in max_in_cobalt_range2:
-                if (j > (cobalt_peak2_energy - 15)) and (j > (cobalt_peak2_energy + 15)):
+                if (j > (cobalt_peak2_energy - 15)) and (j < (cobalt_peak2_energy + 15)):
                     cobalt_exists = True
 
     # return the presence of barium and cobalt
