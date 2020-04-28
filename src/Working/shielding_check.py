@@ -15,20 +15,20 @@ collection_time = 300
 background = np.loadtxt('megadata-910V-300s-background.csv',delimiter=',')
 
 # -----------------------------------------------------------------------------
-    # Step 2: Calibrate with Cs137
+    # Step 2: Calibrate with Na22
 # -----------------------------------------------------------------------------
     # collect raw spectrum
-cs137_raw = np.loadtxt('megadata-910V-300s-cesium-137.csv',delimiter=',')
-cs137 = cs137_raw - background # subtract the background
+na_raw = np.loadtxt('megadata-910V-300s-cesium-137.csv',delimiter=',')
+na_data = na_raw - background # subtract the background
 
 # -----------------------------------------------------------------------------
     # Step 3: Check that there is not too much shielding using Cs-137 peak
 # -----------------------------------------------------------------------------
 distances = [50,75,100] # in cm
 # look for peaks, define these regions of interest manually
-# This is for Cs-137
-cs_min = 634
-cs_max = 738
+# This is for Na-22
+na_min = 475
+na_max = 625
 
 # Collects and calculates the counts per second in a given interval
 def get_cps(spectrum, min_kev, max_kev, a):
@@ -125,5 +125,5 @@ def check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a):
     # Verify shielding does not exceed 2 cm (1 cm thick shell surrounding core)
 # -----------------------------------------------------------------------------
 
-# cs_137_signals, cs_137_s2n = calculate_signals(634,738,cs137) # calculate the expected based on collected data (cs137)
-# print (s2n0)
+# na_signals, na_s2n = calculate_signals(na_data,na_min,na_max,75) # calculate the expected based on collected data (cs137)
+# print (na_signals)
