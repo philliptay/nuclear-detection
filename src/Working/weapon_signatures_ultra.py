@@ -3,6 +3,15 @@ import csv
 
 collection_time = 300
 
+# to collect data each time
+def collect_data():
+    data = np.zeros(2048)
+
+    for i in range(12):
+        data += simplespectrum(60)
+
+    return data
+
 # -----------------------------------------------------------------------------
     # Collect and average the background
 # -----------------------------------------------------------------------------
@@ -131,7 +140,7 @@ def smooth(data):
 def verify(material_data, a):
     # smooth data
     smoothed_data = smooth(material_data)
-    
+
     # we know that barium peak should be be at approx 696 counts
     barium_exists = False
     barium_peak1_energy = 324.075

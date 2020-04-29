@@ -13,14 +13,6 @@ dtb = DeviceFactory.createInstance(DeviceFactory.DeviceInterface.IDevice)
 connect2osprey("128.112.35.172")
 HVon(910)
 
-# to collect data each time
-def collect_data():
-    data = np.zeros(2048)
-
-    for i in range(12):
-        data += simplespectrum(60)
-
-    return data
 
 # 1. collect data: background (x3)
 print('Please point the sensor towards the background. When ready, input Y and press enter')
@@ -66,6 +58,7 @@ print ('Sodium data 2 is collected')
 
 # 4. calibrate with sodium
 (a,b) = sodium_calibration(background, na_raw1, na_raw2) # in weapon_signatures_ultra
+na_noshielding =  na_raw1 - background
 
 
 # 5. collect data: material at 50cm, 75cm, 100cm
@@ -93,10 +86,10 @@ print('Data collection at 100cm is complete')
 
 # 6. check for shielding. terminate if not below the limit
 distances = [50,75,100] # in cm
-cs_min = 634
-cs_max = 738
+min = 481
+max = 576
 
-excessive_shielding = check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a)
+excessive_shielding = check_shielding_run(distances, na_noshielding, min, max, data50, data75, data100, a)
 if (excessive_shielding):
     print('the shielding level is within the accepted range.')
     print('would you like to continue? (Y/N)')

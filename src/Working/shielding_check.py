@@ -12,14 +12,14 @@ collection_time = 300
     # Step 1: Collect the background
 # -----------------------------------------------------------------------------
 
-background = np.loadtxt('megadata-910V-300s-background.csv',delimiter=',')
-
-# -----------------------------------------------------------------------------
-    # Step 2: Calibrate with Cs137
-# -----------------------------------------------------------------------------
-    # collect raw spectrum
-cs137_raw = np.loadtxt('megadata-910V-300s-cesium-137.csv',delimiter=',')
-cs137 = cs137_raw - background # subtract the background
+# background = np.loadtxt('megadata-910V-300s-background.csv',delimiter=',')
+#
+# # -----------------------------------------------------------------------------
+#     # Step 2: Calibrate with Cs137
+# # -----------------------------------------------------------------------------
+#     # collect raw spectrum
+# cs137_raw = np.loadtxt('megadata-910V-300s-cesium-137.csv',delimiter=',')
+# cs137 = cs137_raw - background # subtract the background
 
 # -----------------------------------------------------------------------------
     # Step 3: Check that there is not too much shielding using Cs-137 peak
@@ -27,8 +27,8 @@ cs137 = cs137_raw - background # subtract the background
 distances = [50,75,100] # in cm
 # look for peaks, define these regions of interest manually
 # This is for Cs-137
-cs_min = 634
-cs_max = 738
+# cs_min = 634
+# cs_max = 738
 
 # Collects and calculates the counts per second in a given interval
 def get_cps(spectrum, min_kev, max_kev, a):
@@ -81,12 +81,12 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
     s2n = signal / avg_background(min_kev,max_kev)
     return signal, s2n
 
-def check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a):
+def check_shielding_run(distances, na_noshielding, min, max, data50, data75, data100, a):
     signals = []
     ref_s2n_list = []
     # this builds the reference signal to noise ratios to compare with using Cs-137
     for i in range(0, len(distances)):
-        temp1, temp2 = calculate_signal(cs137,cs_min, cs_max,distances[i])
+        temp1, temp2 = calculate_signal(na_noshielding, min, max,distances[i])
         signals.append(temp1)
         ref_s2n_list.append(temp2)
 
@@ -94,18 +94,18 @@ def check_shielding_run(distances, cs_min, cs_max, data50, data75, data100, a):
 
     # measure at 50 cm:
     # data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps50 = get_cps(data50,cs_min,cs_max, a)
+    cps50 = get_cps(data50,min,max, a)
 
     # measure at 75 cm:
     # data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps100 = get_cps(data75,cs_min,cs_max, a)
+    cps100 = get_cps(data75,min,max, a)
 
     # measure at 100 cm:
     # data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps125 = get_cps(data100,cs_min,cs_max, a)
+    cps125 = get_cps(data100,min,max, a)
 
     # Calculate all signal to noise ratios and put in a list
-    avg_bg = avg_background(cs_min,cs_max, a)
+    avg_bg = avg_background(min,max, a)
     s2n_list = [cps50/avg_bg, cps100/avg_bg, cps125/avg_bg]
     print(ref_s2n_list)
     print(s2n_list)
