@@ -22,23 +22,24 @@ while ans != 'Y':
 print('Running background collection 1')
 data1 = collect_data()
 
-print('Background collection 1 complete. Please change location of background detector. When ready, input Y and press enter')
-ans = input()
-while ans != 'Y':
-    ans = input()
-print('Running background collection 2')
-data2 = collect_data()
+# print('Background collection 1 complete. Please change location of background detector. When ready, input Y and press enter')
+# ans = input()
+# while ans != 'Y':
+#     ans = input()
+# print('Running background collection 2')
+# data2 = collect_data()
 
-print('Background collection 2 complete. Please change location of background detector. When ready, input Y and press enter')
-ans = input()
-while ans != 'Y':
-    ans = input()
-print('Running background collection 3')
-data3 = collect_data()
-print('Background collection 3 complete.')
+# print('Background collection 2 complete. Please change location of background detector. When ready, input Y and press enter')
+# ans = input()
+# while ans != 'Y':
+#     ans = input()
+# print('Running background collection 3')
+# data3 = collect_data()
+# print('Background collection 3 complete.')
 
 # 2. average the backgrounds
-background = avg_backgrounds(data1, data2, data3)
+# background = avg_backgrounds(data1, data2, data3)
+background = data1
 
 # 3. collect data: sodium
 print('Now, please point the sensor to sodium and place it 50 cm away. When ready, input Y and press enter')
@@ -110,35 +111,40 @@ while ans != 'Y':
 print('Running data collection 1')
 material_data1 = collect_data() - background
 
-print('Reading 1 complete. Please ready the sensor for reading 2. When ready, input Y and press enter')
-ans = input()
-while ans != 'Y':
-    ans = input()
-print('Running data collection 2')
-material_data2 = collect_data() - background
+# print('Reading 1 complete. Please ready the sensor for reading 2. When ready, input Y and press enter')
+# ans = input()
+# while ans != 'Y':
+#     ans = input()
+# print('Running data collection 2')
+# material_data2 = collect_data() - background
 
-print('Reading 2 complete. Please ready the sensor for reading 3. When ready, input Y and press enter')
-ans = input()
-while ans != 'Y':
-    ans = input()
-print('Running data collection 3')
-material_data3 = collect_data() - background
-print ('Reading 3 is complete')
+# print('Reading 2 complete. Please ready the sensor for reading 3. When ready, input Y and press enter')
+# ans = input()
+# while ans != 'Y':
+#     ans = input()
+# print('Running data collection 3')
+# material_data3 = collect_data() - background
+# print ('Reading 3 is complete')
 
 # 8. verify the absence of fissile material
 (bmatch1, cmatch1) = verify(material_data1, a)
-(bmatch2, cmatch2) = verify(material_data2, a)
-(bmatch3, cmatch3) = verify(material_data3, a)
+# (bmatch2, cmatch2) = verify(material_data2, a)
+# (bmatch3, cmatch3) = verify(material_data3, a)
 
-if (bmatch1 and bmatch2) or (bmatch1 and bmatch3) or (bmatch2 and bmatch3):
-    print('barium detected in a majority of the tests')
-else:
-    print('barium not detected in a majority of the tests')
+# if (bmatch1 and bmatch2) or (bmatch1 and bmatch3) or (bmatch2 and bmatch3):
+#     print('barium detected in a majority of the tests')
+# else:
+#     print('barium not detected in a majority of the tests')
 
-if (cmatch1 and cmatch2) or (cmatch1 and cmatch3) or (cmatch2 and cmatch3):
-    print('cobalt detected in a majority of the tests')
-else:
-    print('cobalt not detected in a majority of the tests')
+# if (cmatch1 and cmatch2) or (cmatch1 and cmatch3) or (cmatch2 and cmatch3):
+#     print('cobalt detected in a majority of the tests')
+# else:
+#     print('cobalt not detected in a majority of the tests')
+
+if (bmatch1):
+    print('barium detected')
+if (cmatch1):
+    print('cobalt deteceted')
 
 HVoff()
 
