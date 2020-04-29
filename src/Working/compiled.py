@@ -41,7 +41,7 @@ print('Background collection 3 complete.')
 background = avg_background(data1, data2, data3)
 
 # 3. collect data: sodium
-print('Now, please point the sensor to sodium and place it ___cm away. When ready, input Y and press enter')
+print('Now, please point the sensor to sodium and place it 50 cm away. When ready, input Y and press enter')
 ans = input()
 while ans != 'Y':
     ans = input()
