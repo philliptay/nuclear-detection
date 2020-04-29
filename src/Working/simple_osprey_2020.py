@@ -39,8 +39,8 @@ dtb = DeviceFactory.createInstance(DeviceFactory.DeviceInterface.IDevice)
 def collect_data():
     data = np.zeros(2048)
 
-    for i in range(1):
-        data += simplespectrum(10)
+    for i in range(5):
+        data += simplespectrum(60)
 
     return data
 
