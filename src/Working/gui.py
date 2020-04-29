@@ -1,6 +1,7 @@
 #!usr/bin/env python
 
 import sys
+from threading import Thread
 from tkinter import Tk, Button, Label, Entry, Scrollbar, Listbox, Frame, StringVar
 from tkinter import N, S, E, W, HORIZONTAL, END, ACTIVE, DISABLED, NORMAL
 from simple_osprey_2020 import *
@@ -16,6 +17,12 @@ class Gui(object):
     def __init__(self):
 
         self._hvon = False
+        self._gatheringdata = False
+        self._counter = 0
+        self._backgrounds = []
+        self._shielddata = []
+        self._verifydata = []
+        self.
 
         # create gui
         self._root = Tk()
@@ -41,7 +48,7 @@ class Gui(object):
         buttonsFrame.grid_columnconfigure(2, weight=1)
 
 
-        self._self._shieldbutton = Button(buttonsFrame, text='Shielding Check', state=DISABLED)
+        self._shieldbutton = Button(buttonsFrame, text='Shielding Check', state=DISABLED)
         self._shieldbutton.bind('<Button-1>', self.shieldListener)
         self._calibratebutton = Button(buttonsFrame, text='Calibrate', state=DISABLED)
         self._calibratebutton.bind('<Button-1>', self.calibrateListener)
@@ -93,7 +100,7 @@ class Gui(object):
 
     def connectListener(self, event):
         self._scrollingListbox.insert(END, 'Connecting to detector...')
-        connect2osprey(self._ipText)
+        connect2osprey(self._ipText.get())
         self._scrollingListbox.insert(END, 'Connected')
         self._scrollingListbox.insert(END, 'Ramping up HV to 910 V...')
         HVon(910)
@@ -112,51 +119,15 @@ class Gui(object):
         self._scrollingListbox.insert(END, 'HV off')
         self._hvon = False
 
-
-    def shieldListener(self, event):
-        dists = [50,75,100]
-        shielddata = []
-        for i in range(len(dists)):
-            self._scrollingListbox.insert(END, 'Please point the sensor to the material and place it '+str(dists[i])+' cm away from the material. When ready, click gather data.')
-            self._databutton['state'] = NORMAL
-            while(!self._gatheringdata):
-                pass
-            self._databutton['state'] = DISABLED
-            self._scrollingListbox.insert(END, 'Running data collection at '+str(dists[i])+' cm.')
-            shielddata[i] = collect_data() - self._avg_bkgd
-            self._scrollingListbox.insert(END,  'Data collection at '+str(dists[i])+'cm complete.')
-        excessive_shielding = check_shielding_run(dists, self._na_Calibration, MIN_NA, MAX_NA, shielddata[0], shielddata[1], shielddata[2], self._a)
-        if excessive_shielding:
-            self._scrollingListbox.insert(END,  'Shielding within acceptable range. When ready, click Verify button for nuclear material verification.')
-            self._shieldbutton['state'] = DISABLED
-            self._verifybutton['state'] = NORMAL
-        else:
-            self._scrollingListbox.insert(END,  'Too much shielding detected. Please start over, or quit.')
-            self._calibratebutton['state'] = NORMAL
-            self._shieldbutton['state'] = DISABLED
-
     def calibrateListener(self, event):
         self._scrollingListbox.insert(END, 'Please point the sensor towards the background.')
-        background = []
-        for i in range(3):
-            self._scrollingListbox.insert(END, 'When ready, click the gather data button.')
-            self._databutton['state'] = NORMAL
-            while(!self._gatheringdata):
-                pass
-            self._databutton['state'] = DISABLED
-            self._scrollingListbox.insert(END, 'Running background collection '+str(i+1))
-            background[i] = collect_data()
-            self._scrollingListbox.insert(END,  'Background collection '+str(i+1)+' complete. Please change location of background detector.')
-
-
-        self._avg_bkgd = avg_background(background[0],background[1],background[2])
-
-        self._scrollingListbox.insert(END, 'Now, please point the sensor towards the calibration source for two calibration data collections.')
+        self._scrollingListbox.insert(END, 'When ready, click the gather data button.')
+        self._databutton['state'] = NORMAL
         calib = []
         for i in range(2):
             self._scrollingListbox.insert(END, 'When ready, click the gather data button.')
             self._databutton['state'] = NORMAL
-            while(!self._gatheringdata):
+            while(not self._gatheringdata):
                 pass
             self._databutton['state'] = DISABLED
             self._scrollingListbox.insert(END, 'Running calibration collection '+str(i+1))
@@ -172,18 +143,44 @@ class Gui(object):
         self._shieldbutton['state'] = NORMAL
 
 
+    def shieldListener(self, event):
+        dists = [50,75,100]
+        shielddata = []
+        for i in range(len(dists)):
+            self._scrollingListbox.insert(END, 'Please point the sensor to the material and place it '+str(dists[i])+' cm away from the material. When ready, click gather data.')
+            self._databutton['state'] = NORMAL
+            while(not self._gatheringdata):
+                pass
+            self._databutton['state'] = DISABLED
+            self._scrollingListbox.insert(END, 'Running data collection at '+str(dists[i])+' cm.')
+            shielddata[i] = collect_data() - self._avg_bkgd
+            self._scrollingListbox.insert(END,  'Data collection at '+str(dists[i])+'cm complete.')
+        excessive_shielding = check_shielding_run(dists, self._na_Calibration, MIN_NA, MAX_NA, shielddata[0], shielddata[1], shielddata[2], self._a)
+        if excessive_shielding:
+            self._scrollingListbox.insert(END,  'Shielding within acceptable range. When ready, click Verify button for nuclear material verification.')
+            self._shieldbutton['state'] = DISABLED
+            self._verifybutton['state'] = NORMAL
+        else:
+            self._scrollingListbox.insert(END,  'Too much shielding detected. Please start over, or quit.')
+            self._calibratebutton['state'] = NORMAL
+            self._shieldbutton['state'] = DISABLED
+
+
 
     def verifyListener(self, event):
         verifydata = []
         for i in range(3):
-            self._scrollingListbox.insert(END, 'Please point the sensor at the material for reading '+str(i)'. When ready, click gather data.')
+            self._scrollingListbox.insert(END, 'Please point the sensor at the material for reading '+str(i)+'. When ready, click gather data.')
             self._databutton['state'] = NORMAL
-            while(!self._gatheringdata):
+            while(not self._gatheringdata):
                 pass
             self._databutton['state'] = DISABLED
             self._scrollingListbox.insert(END, 'Running data collection '+str(i)+'.')
             verifydata[i] = collect_data() - self._avg_bkgd
             self._scrollingListbox.insert(END,  'Data collection '+str(i)+' complete.')
+
+        self._scrollingListbox.insert(END,  'Data collection complete. Verifying data...')
+
         (bmatch1, cmatch1) = verify(verifydata[0], self._a)
         (bmatch2, cmatch2) = verify(verifydata[1], self._a)
         (bmatch3, cmatch3) = verify(verifydata[2], self._a)
@@ -195,19 +192,43 @@ class Gui(object):
         if (cmatch1 and cmatch2) or (cmatch1 and cmatch3) or (cmatch2 and cmatch3):
             cobalt = True
 
-        
+        print(barium, cobalt)
+        if barium and cobalt:
+            self._scrollingListbox.insert(END,  'Absense of weapon unconfirmed. ')
+        else:
+            self._scrollingListbox.insert(END,  'Absense of weapon confirmed.')
 
 
     def dataListener(self, event):
-        self._gatheringdata = True
-        timerStr = StringVar()
-        self._timer = Label(self._sideFrame, textvariable=timerStr)
-        self._timer.grid(row=3, sticky=E+W, padx=(22,15), pady=10)
-        t = 300
-        while t > 0:
-            t = t-1
-            timerStr.set(t)
-        self._gatheringdata = False
+        thread = WorkerThread(self._sideFrame)
+        thread.start()
+        self._databutton['state'] = DISABLED
+        if self._counter == 0:
+            self._scrollingListbox.insert(END, 'Running background collection 1')
+            self.backgrounds[0] = collect_data()
+            self._scrollingListbox.insert(END,  'Background collection 1 complete. Please change location of background detector.')
+        elif self._counter == 1:
+            self._scrollingListbox.insert(END, 'Running background collection 2')
+            self._backgrounds[1] = collect_data()
+            self._scrollingListbox.insert(END,  'Background collection 2 complete. Please change location of background detector.')
+        elif self._counter == 2:
+            self._scrollingListbox.insert(END, 'Running background collection 3')
+            self._backgrounds[2] = collect_data()
+            self._scrollingListbox.insert(END,  'Background collection 3 complete.')
+            self._avg_bkgd = avg_background(self._backgrounds[0],self._backgrounds[1],self._backgrounds[2])
+            self._scrollingListbox.insert(END, 'Now, please point the sensor towards the calibration source for two calibration data collections.')
+            self._scrollingListbox.insert(END, 'When ready, click the gather data button.')
+        elif self._counter == 3:
+            self._scrollingListbox.insert(END, 'Running background collection 3')
+            self._backgrounds[2] = collect_data()
+            self._scrollingListbox.insert(END,  'Background collection 3 complete.')
+            self._avg_bkgd = avg_background(self._backgrounds[0],self._backgrounds[1],self._backgrounds[2])
+            self._scrollingListbox.insert(END, 'Now, please point the sensor towards the calibration source for two calibration data collections.')
+
+        self._databutton['state'] = ENABLED
+        self._counter = self._counter+1
+
+
 
 
     def on_quit(self):
@@ -220,6 +241,27 @@ class Gui(object):
     def start(self):
         self._root.protocol("WM_DELETE_WINDOW", self.on_quit)
         self._root.mainloop()
+
+class WorkerThread(Thread):
+
+    def __init__(self, frame):
+        Thread.__init__(self)
+        self._sideFrame = frame
+
+    def run(self):
+        self._gatheringdata = True
+        timerStr = StringVar()
+        self._timer = Label(self._sideFrame, textvariable=timerStr)
+        self._timer.grid(row=3, sticky=E+W, padx=(22,15), pady=10)
+        t = 300
+        while t > 0:
+            sleep(1)
+            t = t-1
+            timerStr.set(t)
+        self._gatheringdata = False
+
+
+
 
 def main():
     Gui().start()
