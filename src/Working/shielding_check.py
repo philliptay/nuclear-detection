@@ -70,13 +70,13 @@ def avg_background(min_kev, max_kev, a):
     temp = []
     for i in range(0,n):
         if (energies[i] >= min_kev and energies[i] <= max_kev):
-            temp.append(background[i])
+            temp.append(energies[i])
     return np.average(temp) / collection_time
 
 # Takes in a spectrum and outputs the expected signal and S/N ratio
 # with 2 cm of shielding in a warhead configuration.
-def calculate_signal(spectrum, min_kev, max_kev, distance):
-    cps = get_cps(spectrum, min_kev, max_kev)
+def calculate_signal(spectrum, min_kev, max_kev, distance,a):
+    cps = get_cps(spectrum, min_kev, max_kev,a)
 
     G = 0.1
     d = 20 # distance from source to detector
@@ -92,7 +92,7 @@ def calculate_signal(spectrum, min_kev, max_kev, distance):
 
     # signal to noise ratio
     # collect average background
-    s2n = signal / avg_background(min_kev,max_kev)
+    s2n = signal / avg_background(min_kev,max_kev,a)
     return signal, s2n
 
 def check_shielding_run(distances, na_noshielding, min, max, data50, data75, data100, a):
@@ -100,7 +100,7 @@ def check_shielding_run(distances, na_noshielding, min, max, data50, data75, dat
     ref_s2n_list = []
     # this builds the reference signal to noise ratios to compare with using Cs-137
     for i in range(0, len(distances)):
-        temp1, temp2 = calculate_signal(na_noshielding, min, max,distances[i])
+        temp1, temp2 = calculate_signal(na_noshielding, min, max,distances[i],a)
         signals.append(temp1)
         ref_s2n_list.append(temp2)
 

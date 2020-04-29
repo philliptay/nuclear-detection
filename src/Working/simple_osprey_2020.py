@@ -35,6 +35,15 @@ group = 1 # Memory group
 
 dtb = DeviceFactory.createInstance(DeviceFactory.DeviceInterface.IDevice)
 
+# to collect data each time
+def collect_data():
+    data = np.zeros(2048)
+
+    for i in range(1):
+        data += simplespectrum(10)
+
+    return data
+
 # ----------------------------------------------------------------------
 # Function to log into OPSREY and take control
 # ----------------------------------------------------------------------

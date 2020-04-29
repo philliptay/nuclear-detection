@@ -38,7 +38,7 @@ data3 = collect_data()
 print('Background collection 3 complete.')
 
 # 2. average the backgrounds
-background = avg_background(data1, data2, data3)
+background = avg_backgrounds(data1, data2, data3)
 
 # 3. collect data: sodium
 print('Now, please point the sensor to sodium and place it ___cm away. When ready, input Y and press enter')

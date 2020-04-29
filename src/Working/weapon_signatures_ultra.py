@@ -3,19 +3,10 @@ import csv
 
 collection_time = 300
 
-# to collect data each time
-def collect_data():
-    data = np.zeros(2048)
-
-    for i in range(12):
-        data += simplespectrum(60)
-
-    return data
-
 # -----------------------------------------------------------------------------
     # Collect and average the background
 # -----------------------------------------------------------------------------
-def avg_background(b1, b2, b3):
+def avg_backgrounds(b1, b2, b3):
 #     b1 = np.loadtxt('ultradata-background-300s-run1.csv',delimiter=',')
 #     b2 = np.loadtxt('ultradata-background-300s-run2.csv',delimiter=',')
 #     b3 = np.loadtxt('ultradata-background-300s-run3.csv',delimiter=',')
@@ -34,7 +25,7 @@ def sodium_calibration(background, na_raw1, na_raw2):
     na1 = smooth(na_raw1 - background)
     na2 = smooth(na_raw2 - background)
     na = []
-    for i in range(0,len(b1)):
+    for i in range(0,len(na1)):
         na.append((na1[i]+na2[i])/2)
 
     na_peak1 = 511
