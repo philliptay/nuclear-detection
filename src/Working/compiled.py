@@ -90,7 +90,7 @@ distances = [50,75,100] # in cm
 min = 481
 max = 576
 
-excessive_shielding = check_shielding_run(distances, na_noshielding, min, max, data50, data75, data100, a)
+excessive_shielding = check_shielding_run(distances, na_noshielding, min, max, data75, a)
 if (excessive_shielding):
     print('the shielding level is within the accepted range.')
     print('would you like to continue? (Y/N)')

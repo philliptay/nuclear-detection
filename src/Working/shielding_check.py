@@ -33,7 +33,7 @@ collection_time = 300
 # -----------------------------------------------------------------------------
     # Step 3: Check that there is not too much shielding using Cs-137 peak
 # -----------------------------------------------------------------------------
-distances = [50,75,100] # in cm
+  #distances = [50,75,100] # in cm
 # look for peaks, define these regions of interest manually
 
 # This is for Cs-137
@@ -95,7 +95,7 @@ def calculate_signal(spectrum, min_kev, max_kev, distance,a):
     s2n = signal / avg_background(min_kev,max_kev,a)
     return signal, s2n
 
-def check_shielding_run(distances, na_noshielding, min, max, data50, data75, data100, a):
+def check_shielding_run(distances, na_noshielding, min, max, data75, a):
     signals = []
     ref_s2n_list = []
     # this builds the reference signal to noise ratios to compare with using Cs-137
@@ -108,7 +108,7 @@ def check_shielding_run(distances, na_noshielding, min, max, data50, data75, dat
 
     # measure at 50 cm:
     # data50 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps50 = get_cps(data50,min,max, a)
+    #cps50 = get_cps(data50,min,max, a)
 
     # measure at 75 cm:
     # data100 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
@@ -116,7 +116,7 @@ def check_shielding_run(distances, na_noshielding, min, max, data50, data75, dat
 
     # measure at 100 cm:
     # data125 = np.loadtxt('ba-133.csv',delimiter=',') # placeholder for now, would collect a full spectrum and subtract background
-    cps125 = get_cps(data100,min,max, a)
+    #cps125 = get_cps(data100,min,max, a)
 
     # Calculate all signal to noise ratios and put in a list
     avg_bg = avg_background(min,max, a)
@@ -125,8 +125,10 @@ def check_shielding_run(distances, na_noshielding, min, max, data50, data75, dat
     print(s2n_list)
 
     excessive_shielding = False
-    for i in range(0,len(s2n_list)):
-        if (s2n_list[i] < ref_s2n_list[i]):
+    #for i in range(0,len(s2n_list)):
+    #    if (s2n_list[i] < ref_s2n_list[i]):
+    #        excessive_shielding = True
+    if (cps100/avg_bg < ref_s2n_list[2]):
             excessive_shielding = True
 
     return excessive_shielding

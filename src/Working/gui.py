@@ -141,52 +141,59 @@ class Gui(object):
     #    thread.start()
         self._databutton['state'] = DISABLED
         if self._counter == 0:
-            self._scrollingListbox.insert(END, 'Running background collection 1')
-            self._backgrounds.append(collect_data())
-            self._scrollingListbox.insert(END,  'Background collection 1 complete. Please change location of background detector. When ready, click gather data.')
-            self._databutton['state'] = NORMAL
-        elif self._counter == 1:
-            self._scrollingListbox.insert(END, 'Running background collection 2')
-            self._backgrounds.append(collect_data())
-            self._scrollingListbox.insert(END,  'Background collection 2 complete. Please change location of background detector. When ready, click gather data.')
-            self._databutton['state'] = NORMAL
-        elif self._counter == 2:
-            self._scrollingListbox.insert(END, 'Running background collection 3')
-            self._backgrounds.append(collect_data())
-            self._scrollingListbox.insert(END,  'Background collection 3 complete.')
-            self._avg_bkgd = avg_backgrounds(self._backgrounds[0],self._backgrounds[1],self._backgrounds[2])
+            self._scrollingListbox.insert(END, 'Running background collection')
+            self._avg_bkgd = collect_data()
+            self._scrollingListbox.insert(END,  'Background collection complete. Please change location of background detector.')
             self._scrollingListbox.insert(END, 'Now, please point the sensor towards the calibration source for two calibration data collections.')
             self._scrollingListbox.insert(END, 'When ready, click the gather data button.')
             self._databutton['state'] = NORMAL
-        elif self._counter == 3:
-            self._scrollingListbox.insert(END, 'Running calibration collection 1')
+        # elif self._counter == 1:
+        #     self._scrollingListbox.insert(END, 'Running background collection 2')
+        #     self._backgrounds.append(collect_data())
+        #     self._scrollingListbox.insert(END,  'Background collection 2 complete. Please change location of background detector. When ready, click gather data.')
+        #     self._databutton['state'] = NORMAL
+        # elif self._counter == 2:
+        #     self._scrollingListbox.insert(END, 'Running background collection 3')
+        #     self._backgrounds.append(collect_data())
+        #     self._scrollingListbox.insert(END,  'Background collection 3 complete.')
+        #     self._avg_bkgd = avg_backgrounds(self._backgrounds[0],self._backgrounds[1],self._backgrounds[2])
+        #     self._scrollingListbox.insert(END, 'Now, please point the sensor towards the calibration source for two calibration data collections.')
+        #     self._scrollingListbox.insert(END, 'When ready, click the gather data button.')
+        #    self._databutton['state'] = NORMAL
+        elif self._counter == 1:
+            self._scrollingListbox.insert(END, 'Running calibration collection ')
             self._calib.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Calibration collection 1 complete. Please ready the sensor for reading 2. When ready, click gather data.')
+            self._scrollingListbox.insert(END,  'Calibration collection complete.  When ready, click gather data.')
             self._databutton['state'] = NORMAL
-        elif self._counter == 4:
-            self._scrollingListbox.insert(END, 'Running calibration collection 2')
-            self._calib.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Calibration collection 2 complete.')
-            (self._a,b) = sodium_calibration(self._avg_bkgd, self._calib[0], self._calib[1])
+            (self._a,b) = sodium_calibration(self._avg_bkgd, self._calib[0], self._calib[0])
             self._naCalibration = self._calib[0]-self._avg_bkgd
             self._scrollingListbox.insert(END,  'Calibration completed. When ready, click Shielding Check to continue.')
             self._calibratebutton['state'] = DISABLED
             self._shieldbutton['state'] = NORMAL
-        elif self._counter == 5:
-            self._scrollingListbox.insert(END, 'Running data collection at 50 cm.')
+        # elif self._counter == 2:
+        #     self._scrollingListbox.insert(END, 'Running calibration collection 2')
+        #     self._calib.append(collect_data() - self._avg_bkgd)
+        #     self._scrollingListbox.insert(END,  'Calibration collection 2 complete.')
+        #     (self._a,b) = sodium_calibration(self._avg_bkgd, self._calib[0], self._calib[0])
+        #     self._naCalibration = self._calib[0]-self._avg_bkgd
+        #     self._scrollingListbox.insert(END,  'Calibration completed. When ready, click Shielding Check to continue.')
+        #     self._calibratebutton['state'] = DISABLED
+        #     self._shieldbutton['state'] = NORMAL
+        # elif self._counter == 5:
+        #     self._scrollingListbox.insert(END, 'Running data collection for shielding.')
+        #     self._shielddata.append(collect_data() - self._avg_bkgd)
+        #     self._scrollingListbox.insert(END,  'Data collection at 50 cm complete. Please move the sensor to 75cm. When ready, press gather data.')
+        #     self._databutton['state'] = NORMAL
+        # elif self._counter == 6:
+        #     self._scrollingListbox.insert(END, 'Running data collection at 75 cm.')
+        #     self._shielddata.append(collect_data() - self._avg_bkgd)
+        #     self._scrollingListbox.insert(END,  'Data collection at 75 cm complete. Please move the sensor to 100cm. When ready, press gather data.')
+        #     self._databutton['state'] = NORMAL
+        elif self._counter == 2:
+            self._scrollingListbox.insert(END, 'Running shield data collection..')
             self._shielddata.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Data collection at 50 cm complete. Please move the sensor to 75cm. When ready, press gather data.')
-            self._databutton['state'] = NORMAL
-        elif self._counter == 6:
-            self._scrollingListbox.insert(END, 'Running data collection at 75 cm.')
-            self._shielddata.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Data collection at 75 cm complete. Please move the sensor to 100cm. When ready, press gather data.')
-            self._databutton['state'] = NORMAL
-        elif self._counter == 7:
-            self._scrollingListbox.insert(END, 'Running data collection at 100 cm.')
-            self._shielddata.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Data collection at 100 cm complete. Checking shielding level...')
-            excessive_shielding = check_shielding_run([50,75,100], self._naCalibration, MIN_NA, MAX_NA, self._shielddata[0], self._shielddata[1], self._shielddata[2], self._a)
+            self._scrollingListbox.insert(END,  'Data collection complete. Checking shielding level...')
+            excessive_shielding = check_shielding_run([75,75,75], self._naCalibration, MIN_NA, MAX_NA, self._shielddata[0], self._a)
             if excessive_shielding:
                 self._scrollingListbox.insert(END,  'Shielding within acceptable range. When ready, click Verify button for nuclear material verification.')
                 self._shieldbutton['state'] = DISABLED
@@ -195,31 +202,29 @@ class Gui(object):
                 self._scrollingListbox.insert(END,  'Too much shielding detected. Please start over, or quit.')
                 self._calibratebutton['state'] = NORMAL
                 self._shieldbutton['state'] = DISABLED
-                self._verifybutton['state'] = NORMAL#####
+                self._verifybutton['state'] = NORMAL#
                 #self._counter = -1
-        elif self._counter == 8:
-            self._scrollingListbox.insert(END, 'Running data collection 1.')
-            self._verifydata.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Data collection 1 complete. Please ready the sensor for reading 2. When ready, press gather data.')
-            self._databutton['state'] = NORMAL
-        elif self._counter == 9:
-            self._scrollingListbox.insert(END, 'Running data collection 2.')
-            self._verifydata.append(collect_data() - self._avg_bkgd)
-            self._scrollingListbox.insert(END,  'Data collection 2 complete. Please ready the sensor for reading 3. When ready, press gather data.')
-            self._databutton['state'] = NORMAL
-        elif self._counter == 10:
+        # elif self._counter == 8:
+        #     self._scrollingListbox.insert(END, 'Running data collection 1.')
+        #     self._verifydata.append(collect_data() - self._avg_bkgd)
+        #     self._scrollingListbox.insert(END,  'Data collection 1 complete. Please ready the sensor for reading 2. When ready, press gather data.')
+        #     self._databutton['state'] = NORMAL
+        # elif self._counter == 9:
+        #     self._scrollingListbox.insert(END, 'Running data collection 2.')
+        #     self._verifydata.append(collect_data() - self._avg_bkgd)
+        #     self._scrollingListbox.insert(END,  'Data collection 2 complete. Please ready the sensor for reading 3. When ready, press gather data.')
+        #     self._databutton['state'] = NORMAL
+        elif self._counter == 3:
             self._scrollingListbox.insert(END, 'Running data collection 3.')
             self._verifydata.append(collect_data() - self._avg_bkgd)
             self._scrollingListbox.insert(END,  'Data collection complete. Verifying data...')
             (bmatch1, cmatch1) = verify(self._verifydata[0], self._a)
-            (bmatch2, cmatch2) = verify(self._verifydata[1], self._a)
-            (bmatch3, cmatch3) = verify(self._verifydata[2], self._a)
             barium = False
             cobalt = False
-            if (bmatch1 and bmatch2) or (bmatch1 and bmatch3) or (bmatch2 and bmatch3):
+            if bmatch1 :
                 barium = True
 
-            if (cmatch1 and cmatch2) or (cmatch1 and cmatch3) or (cmatch2 and cmatch3):
+            if cmatch1 :
                 cobalt = True
 
             print(barium, cobalt)
